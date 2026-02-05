@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { 
   AlertTriangle, CheckCircle2, XCircle, MapPin, 
   Clock, Bell, PhoneCall, Waves, Wind, 
-  Navigation, Thermometer, Droplets, Info, Loader2, Wifi, WifiOff, MessageSquare
+  Navigation, Thermometer, Droplets, Info, Loader2, Wifi, WifiOff, MessageSquare, Compass, Zap, Anchor
 } from 'lucide-react';
 
-const KadalSathi = () => {
-  // --- STATE MANAGEMENT ---
+const App = () => {
+  // --- STATE ---
   const [isMalayalam, setIsMalayalam] = useState(false);
   const [status, setStatus] = useState('safe'); 
-  const [isOnlineManual, setIsOnlineManual] = useState(true); // MANUAL TOGGLE FOR DEMO
+  const [isOnlineManual, setIsOnlineManual] = useState(true);
   const [isSendingSos, setIsSendingSos] = useState(false);
-  const [coords, setCoords] = useState({ lat: "9.9312", lng: "76.2673" });
+  const [coords, setCoords] = useState({ lat: "11.2588", lng: "75.7804" }); // Calicut Coordinates
 
   const content = {
     en: {
@@ -19,43 +19,48 @@ const KadalSathi = () => {
       sos: "EMERGENCY SOS",
       onlineMode: "Satellite Link Active",
       offlineMode: "SMS Mode (No Internet)",
-      onlineDesc: "Sending live GPS tracking to rescue server.",
-      offlineDesc: "Sending coordinates via Emergency SMS.",
-      location: "Current Location",
+      location: "Calicut Coast",
       safe: "SAFE FOR FISHING",
       danger: "STAY ASHORE",
-      updated: "Last Update",
-      tides: "Tide Times",
+      calicutFocus: "Calicut Fishing Intelligence",
+      hotspotTitle: "Top Spot: Chaliyam Reefs",
+      hotspotDetail: "12km West from Beypore Harbour. High Tuna activity reported.",
+      waitTitle: "Wait for Safety Window",
+      waitDetail: "Weather clearing expected by:",
+      resumeTime: "Tomorrow, 06:00 AM",
+      riskTitle: "Danger Factors",
+      riskDesc: "Rough seas at Puthiyappa. Wave height > 3.5m.",
       alerts: "Alerts",
-      contact: "Coastal Police"
+      contact: "Police"
     },
     ml: {
       name: "കടൽസാഥി",
       sos: "അടിയന്തര സഹായം",
-      onlineMode: "സാറ്റലൈറ്റ് ലിങ്ക് ലഭ്യമാണ്",
-      offlineMode: "SMS മോഡ് (ഇന്റർനെറ്റ് ഇല്ല)",
-      onlineDesc: "ലൈവ് ലൊക്കേഷൻ സെർവറിലേക്ക് അയക്കുന്നു.",
-      offlineDesc: "ലൊക്കേഷൻ SMS വഴി അയക്കുന്നു.",
-      location: "നിങ്ങളുടെ സ്ഥാനം",
-      safe: "കടലിൽ പോകാൻ അനുയോജ്യം",
+      onlineMode: "സാറ്റലൈറ്റ് ലിങ്ക്",
+      offlineMode: "SMS മോഡ്",
+      location: "കോഴിക്കോട് തീരം",
+      safe: "കടലിൽ പോകാം",
       danger: "കടലിൽ പോകരുത്",
-      updated: "അവസാനം പുതുക്കിയത്",
-      tides: "വേലിയേറ്റം/ഇറക്കം",
+      calicutFocus: "കോഴിക്കോട് ഫിഷിംഗ് ഇൻ്റലിജൻസ്",
+      hotspotTitle: "ചാലിയം കടൽത്തീരം",
+      hotspotDetail: "ബേപ്പൂർ തുറമുഖത്ത് നിന്ന് 12 കിലോമീറ്റർ പടിഞ്ഞാറ്. ട്യൂണ ലഭിക്കാൻ സാധ്യത.",
+      waitTitle: "സുരക്ഷിത സമയത്തിനായി കാത്തിരിക്കുക",
+      waitDetail: "കാലാവസ്ഥ മെച്ചപ്പെടാൻ സാധ്യതയുള്ള സമയം:",
+      resumeTime: "നാളെ രാവിലെ 06:00",
+      riskTitle: "അപകട കാരണം",
+      riskDesc: "പുതിയപ്പയിൽ കടൽ പ്രക്ഷുബ്ധമാണ്. തിരമാലകൾ 3.5 മീറ്ററിൽ കൂടുതൽ.",
       alerts: "അറിയിപ്പുകൾ",
-      contact: "കോസ്റ്റൽ പോലീസ്"
+      contact: "പോലീസ്"
     }
   };
 
   const t = isMalayalam ? content.ml : content.en;
 
-  // --- SOS LOGIC ---
   const handleSos = () => {
     setIsSendingSos(true);
     setTimeout(() => {
-      if (isOnlineManual) {
-        console.log("API CALL: Sending JSON to rescue.kerala.gov.in");
-      } else {
-        const smsMsg = `EMERGENCY! Boat KadalSathi needs rescue at Lat: ${coords.lat}, Lng: ${coords.lng}. View: https://maps.google.com/?q=${coords.lat},${coords.lng}`;
+      if (!isOnlineManual) {
+        const smsMsg = `SOS: Calicut Boat at ${coords.lat}, ${coords.lng}`;
         window.location.href = `sms:1554?body=${encodeURIComponent(smsMsg)}`;
       }
       setIsSendingSos(false);
@@ -63,139 +68,169 @@ const KadalSathi = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto min-h-screen bg-slate-50 flex flex-col font-sans antialiased pb-8 border-x border-slate-200">
+    <div className="max-w-md mx-auto min-h-screen bg-slate-50 flex flex-col font-sans antialiased pb-8 border-x border-slate-200 shadow-2xl relative overflow-x-hidden">
       
-      {/* 1. DEMO CONTROL PANEL (Manual Toggles) */}
+      {/* 1. DEMO OVERRIDE PANEL */}
       <div className="bg-slate-900 p-2 flex flex-col gap-2">
         <div className="flex justify-between items-center px-2">
-          <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Demo Controls</span>
-          <span className="text-[9px] text-slate-500 font-bold tracking-widest uppercase">Last Sync: 12:40 PM</span>
+          <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Region: Kozhikode / Calicut</span>
+          <span className="text-[9px] text-emerald-500 font-bold tracking-widest uppercase flex items-center gap-1">
+             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> IMD Verified
+          </span>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          {/* Network Toggle */}
-          <button 
-            onClick={() => setIsOnlineManual(!isOnlineManual)}
-            className={`flex items-center justify-center gap-2 py-1.5 rounded-lg text-[10px] font-black transition-all ${isOnlineManual ? 'bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/50' : 'bg-red-500/20 text-red-400 ring-1 ring-red-500/50'}`}
-          >
-            {isOnlineManual ? <><Wifi size={12}/> ONLINE</> : <><WifiOff size={12}/> OFFLINE (SMS)</>}
+          <button onClick={() => setIsOnlineManual(!isOnlineManual)} className={`flex items-center justify-center gap-2 py-1.5 rounded-lg text-[10px] font-black transition-all ${isOnlineManual ? 'bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/50' : 'bg-red-500/20 text-red-400 ring-1 ring-red-500/50'}`}>
+            {isOnlineManual ? 'WIFI ON' : 'WIFI OFF (SMS)'}
           </button>
-          {/* Safety Toggle */}
-          <button 
-            onClick={() => setStatus(status === 'safe' ? 'danger' : 'safe')}
-            className={`flex items-center justify-center gap-2 py-1.5 rounded-lg text-[10px] font-black transition-all ${status === 'safe' ? 'bg-blue-500/20 text-blue-300 ring-1 ring-blue-500/50' : 'bg-orange-500/20 text-orange-300 ring-1 ring-orange-500/50'}`}
-          >
-            {status === 'safe' ? 'SWITCH TO DANGER' : 'SWITCH TO SAFE'}
+          <button onClick={() => setStatus(status === 'safe' ? 'danger' : 'safe')} className={`flex items-center justify-center gap-2 py-1.5 rounded-lg text-[10px] font-black transition-all ${status === 'safe' ? 'bg-blue-500/20 text-blue-300 ring-1 ring-blue-500/50' : 'bg-orange-500/20 text-orange-300 ring-1 ring-orange-500/50'}`}>
+            {status === 'safe' ? 'SIMULATE DANGER' : 'SIMULATE SAFE'}
           </button>
         </div>
       </div>
 
       {/* 2. HEADER */}
-      <header className="bg-white p-4 flex justify-between items-center border-b sticky top-0 z-10">
+      <header className="bg-white p-4 flex justify-between items-center border-b shadow-sm sticky top-0 z-20">
         <div className="flex items-center gap-3">
-          <div className="bg-blue-700 p-2 rounded-xl"><Navigation size={24} color="white" fill="white" /></div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tighter">{t.name}</h1>
+          <div className="bg-blue-800 p-2 rounded-xl shadow-lg shadow-blue-100">
+            <Anchor size={22} color="white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-black text-slate-900 tracking-tighter leading-none">{t.name}</h1>
+            <p className="text-[9px] font-bold text-blue-600 uppercase mt-0.5 tracking-wider">Kozhikode SAR Zone</p>
+          </div>
         </div>
-        <button onClick={() => setIsMalayalam(!isMalayalam)} className="bg-slate-900 text-white px-3 py-1.5 rounded-lg font-black text-xs">
-          {isMalayalam ? "EN" : "മലയാളം"}
+        <button onClick={() => setIsMalayalam(!isMalayalam)} className="bg-slate-100 border-2 border-slate-900 text-slate-900 px-3 py-1 rounded-lg font-black text-[10px] active:scale-95 transition-transform uppercase tracking-tighter">
+          {isMalayalam ? "ENGLISH" : "മലയാളം"}
         </button>
       </header>
 
       {/* 3. HERO STATUS */}
-      <section className={`m-4 rounded-[2.5rem] p-8 shadow-2xl flex flex-col items-center text-white transition-all duration-700 ${status === 'safe' ? 'bg-emerald-600' : 'bg-red-600'}`}>
-        <div className="bg-white/20 p-4 rounded-full backdrop-blur-md mb-4 animate-pulse">
-          {status === 'safe' ? <CheckCircle2 size={64} /> : <XCircle size={64} />}
+      <section className={`m-4 rounded-[2.5rem] p-6 shadow-xl flex flex-col items-center text-white transition-all duration-700 relative overflow-hidden ${status === 'safe' ? 'bg-emerald-600' : 'bg-red-600'}`}>
+        <div className="absolute top-0 right-0 p-4 opacity-10">
+          <Waves size={120} />
         </div>
-        <h2 className={`font-black text-center leading-tight ${isMalayalam ? 'text-4xl' : 'text-2xl'}`}>
+        <div className="bg-white/20 p-4 rounded-full backdrop-blur-md mb-3 ring-8 ring-white/10 z-10">
+          {status === 'safe' ? <CheckCircle2 size={56} strokeWidth={3} /> : <XCircle size={56} strokeWidth={3} />}
+        </div>
+        <h2 className={`font-black text-center leading-tight z-10 ${isMalayalam ? 'text-3xl' : 'text-2xl'}`}>
           {status === 'safe' ? t.safe : t.danger}
         </h2>
       </section>
 
-      {/* 4. SOS PAYLOAD PREVIEW (Dynamic Card) */}
-      <div className="px-4 mb-4">
-        <div className={`rounded-2xl p-4 border-2 flex items-center gap-4 ${isOnlineManual ? 'bg-emerald-50 border-emerald-100' : 'bg-amber-50 border-amber-100'}`}>
-          <div className={`p-3 rounded-full ${isOnlineManual ? 'bg-emerald-500' : 'bg-amber-500'} text-white`}>
-            {isOnlineManual ? <Wifi size={20} /> : <MessageSquare size={20} />}
-          </div>
-          <div className="flex-1">
-            <h4 className="text-sm font-black text-slate-800 uppercase">{isOnlineManual ? t.onlineMode : t.offlineMode}</h4>
-            <p className="text-[11px] text-slate-500 font-medium leading-tight">{isOnlineManual ? t.onlineDesc : t.offlineDesc}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* 5. METRICS & CONTENT */}
-      <main className="px-4 space-y-4 flex-grow">
-        <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-          <MetricTile icon={<Wind size={16}/>} label="Wind" value="14 km/h" />
-          <MetricTile icon={<Waves size={16}/>} label="Wave" value="1.5 m" />
-          <MetricTile icon={<Thermometer size={16}/>} label="Temp" value="30°C" />
+      {/* 4. MAIN TAG - HYPER LOCAL CALICUT INTELLIGENCE */}
+      <main className="px-4 flex-grow space-y-4">
+        
+        <div className="flex items-center gap-2 px-1">
+          <div className="h-[2px] flex-grow bg-slate-200"></div>
+          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{t.calicutFocus}</span>
+          <div className="h-[2px] flex-grow bg-slate-200"></div>
         </div>
 
-        {/* Tide Tracker */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
-          <h3 className="text-[10px] font-black text-slate-400 uppercase mb-3 flex items-center gap-2">
-            <Clock size={14}/> {t.tides}
-          </h3>
-          <div className="flex justify-between text-center">
-            <div><p className="text-[10px] font-bold text-blue-500 uppercase">High</p><p className="text-lg font-black italic">12:30 PM</p></div>
-            <div className="w-[1px] bg-slate-100"></div>
-            <div><p className="text-[10px] font-bold text-slate-400 uppercase">Low</p><p className="text-lg font-black italic">06:45 PM</p></div>
+        {status === 'safe' ? (
+          /* CALICUT HOTSPOT CARD */
+          <div className="bg-slate-900 text-white rounded-3xl p-5 shadow-lg relative overflow-hidden group">
+            <Compass className="absolute -right-4 -bottom-4 opacity-10 w-28 h-28 rotate-12 group-hover:rotate-45 transition-transform duration-1000" />
+            <div className="flex items-start gap-4">
+              <div className="bg-blue-600 p-3 rounded-2xl shadow-inner">
+                <MapPin size={24} fill="white" />
+              </div>
+              <div>
+                <h4 className="text-[10px] font-black uppercase text-blue-400 tracking-widest mb-1">{t.hotspotTitle}</h4>
+                <p className={`font-black leading-tight ${isMalayalam ? 'text-lg' : 'text-xl'}`}>{t.hotspotLoc}</p>
+                <p className="text-[11px] text-slate-400 mt-2 font-medium">{t.hotspotDetail}</p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* RESUME FISHING CARD */
+          <div className="bg-white border-2 border-red-100 rounded-3xl p-5 shadow-sm space-y-4">
+            <div className="flex items-start gap-4">
+              <div className="bg-red-100 p-3 rounded-2xl text-red-600">
+                <Clock size={24} strokeWidth={3} />
+              </div>
+              <div>
+                <h4 className="text-[10px] font-black uppercase text-red-500 tracking-widest mb-1">{t.waitTitle}</h4>
+                <p className="text-[11px] text-slate-500 font-bold mb-2">{t.waitDetail}</p>
+                <div className="bg-red-50 px-4 py-2 rounded-xl inline-block">
+                   <p className="text-xl font-black text-red-600 tracking-tighter">{t.resumeTime}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+               <h5 className="text-[9px] font-black text-slate-400 uppercase mb-2 flex items-center gap-2">
+                 <AlertTriangle size={12} className="text-orange-500" /> {t.riskTitle}
+               </h5>
+               <p className="text-xs font-bold text-slate-700 leading-snug">{t.riskDesc}</p>
+            </div>
+          </div>
+        )}
+
+        {/* METRICS ROW */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-white p-4 rounded-2xl border border-slate-100 flex flex-col items-center">
+            <Wind size={20} className={status === 'safe' ? 'text-blue-500' : 'text-red-500'} />
+            <span className="text-[9px] font-black text-slate-400 uppercase mt-2">Wind Speed</span>
+            <span className="text-lg font-black text-slate-900">{status === 'safe' ? '12 km/h' : '52 km/h'}</span>
+          </div>
+          <div className="bg-white p-4 rounded-2xl border border-slate-100 flex flex-col items-center">
+            <Waves size={20} className={status === 'safe' ? 'text-blue-500' : 'text-red-500'} />
+            <span className="text-[9px] font-black text-slate-400 uppercase mt-2">Wave Height</span>
+            <span className="text-lg font-black text-slate-900">{status === 'safe' ? '0.8 m' : '3.8 m'}</span>
           </div>
         </div>
+
       </main>
 
-      {/* 6. SOS OVERLAY */}
+      {/* 5. ACTION FOOTER */}
+      <footer className="mt-auto px-4 space-y-3 pt-4 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] z-10">
+        <div className="grid grid-cols-2 gap-3">
+          <button className="flex items-center justify-center gap-2 py-4 bg-slate-50 border-2 border-slate-200 rounded-2xl font-black text-[11px] text-slate-600 uppercase tracking-tighter">
+            <Bell size={18} /> {t.alerts}
+          </button>
+          <button className="flex items-center justify-center gap-2 py-4 bg-slate-50 border-2 border-slate-200 rounded-2xl font-black text-[11px] text-slate-600 uppercase tracking-tighter">
+            <Info size={18} /> {t.contact}
+          </button>
+        </div>
+        
+        <button 
+          onClick={handleSos}
+          className="w-full flex flex-col items-center justify-center py-5 bg-red-600 rounded-[2.5rem] font-black text-white shadow-xl shadow-red-200 active:bg-red-800 active:scale-95 transition-all"
+        >
+          <div className="flex items-center gap-4">
+            <PhoneCall size={32} fill="white" />
+            <span className="text-3xl tracking-tighter uppercase">{t.sos}</span>
+          </div>
+          <div className="flex items-center gap-2 mt-1 opacity-80">
+            {isOnlineManual ? <Wifi size={12}/> : <WifiOff size={12}/>}
+            <span className="text-[9px] font-bold uppercase tracking-widest italic">
+              {isOnlineManual ? "Satellite Broadcast Active" : "Emergency SMS Protocol"}
+            </span>
+          </div>
+        </button>
+      </footer>
+
+      {/* SOS OVERLAY */}
       {isSendingSos && (
-        <div className="fixed inset-0 bg-slate-900/95 z-50 flex flex-col items-center justify-center text-white p-6 text-center">
-          <Loader2 className="animate-spin mb-6" size={64} />
+        <div className="fixed inset-0 bg-slate-900/95 z-[100] flex flex-col items-center justify-center text-white p-8 text-center animate-in fade-in duration-300">
+          <Loader2 className="animate-spin mb-8 text-blue-500" size={64} />
           {isOnlineManual ? (
-            <div className="animate-pulse">
-              <Wifi size={80} className="text-emerald-400 mx-auto mb-4" />
-              <p className="text-2xl font-black uppercase tracking-tight">Broadcasting Live Coordinates</p>
+            <div className="flex flex-col items-center">
+              <Wifi size={80} className="text-emerald-400 mb-6 drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]" />
+              <p className="text-2xl font-black tracking-tight">TRANSMITTING COORDINATES</p>
+              <p className="text-slate-400 mt-2 font-mono text-sm tracking-widest">{coords.lat}N, {coords.lng}E</p>
             </div>
           ) : (
-            <div className="animate-bounce">
-              <MessageSquare size={80} className="text-amber-500 mx-auto mb-4" />
-              <p className="text-2xl font-black uppercase tracking-tight">Generating Rescue SMS</p>
-              <p className="text-slate-400 mt-2 text-sm uppercase">Automatic failover triggered</p>
+            <div className="flex flex-col items-center animate-bounce">
+              <MessageSquare size={80} className="text-amber-500 mb-6" />
+              <p className="text-2xl font-black tracking-tight uppercase">No Network: Sending SMS</p>
+              <p className="text-amber-200 mt-2 text-sm font-bold tracking-widest uppercase">Target: SAR HQ (1554)</p>
             </div>
           )}
         </div>
       )}
-
-      {/* 7. ACTION FOOTER */}
-      <footer className="mt-auto px-4 space-y-3 pt-4 bg-white border-t border-slate-100 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
-        <div className="grid grid-cols-2 gap-3">
-          <button className="flex items-center justify-center gap-2 py-4 bg-white border-2 border-slate-900 rounded-2xl font-black text-slate-900 active:bg-slate-50">
-            <Bell size={20} /> {t.alerts}
-          </button>
-          <button className="flex items-center justify-center gap-2 py-4 bg-white border-2 border-slate-900 rounded-2xl font-black text-slate-900 active:bg-slate-50">
-            <Info size={20} /> {t.contact}
-          </button>
-        </div>
-        <button 
-          onClick={handleSos}
-          className="w-full flex flex-col items-center justify-center gap-0.5 py-5 bg-red-600 rounded-[2rem] font-black text-white shadow-xl shadow-red-200 active:bg-red-900 transition-all hover:scale-[1.02]"
-        >
-          <div className="flex items-center gap-3">
-            <PhoneCall size={28} fill="white" />
-            <span className="text-2xl uppercase tracking-tighter">{t.sos}</span>
-          </div>
-          <span className="text-[9px] font-bold opacity-70 uppercase tracking-widest italic">
-            {isOnlineManual ? "via Satellite Link" : "via Emergency SMS"}
-          </span>
-        </button>
-      </footer>
     </div>
   );
 };
 
-const MetricTile = ({ icon, label, value }) => (
-  <div className="bg-white min-w-[100px] p-3 rounded-xl border border-slate-100 shadow-sm flex flex-col items-center">
-    <div className="text-blue-600 mb-1">{icon}</div>
-    <span className="text-[10px] text-slate-400 font-bold uppercase">{label}</span>
-    <span className="font-black text-slate-800">{value}</span>
-  </div>
-);
-
-export default KadalSathi;
+export default App;
