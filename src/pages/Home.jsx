@@ -6,6 +6,7 @@ import {
     MapPin,
     Clock,
     Bell,
+    ArrowRight ,
     PhoneCall,
     Waves,
     Wind,
@@ -20,6 +21,7 @@ import {
     Compass,
     Zap,
     Anchor,
+    ShoppingBasket,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -90,69 +92,47 @@ const App = () => {
     return (
         <div className="max-w-md mx-auto min-h-screen bg-slate-50 flex flex-col font-sans antialiased pb-8 border-x border-slate-200 shadow-2xl relative overflow-x-hidden">
             {/* 1. DEMO OVERRIDE PANEL */}
-            <div className="bg-slate-900 rounded-xl p-3 flex flex-col gap-3 shadow-lg ring-1 ring-slate-800">
-                {/* Header */}
-                <div className="flex justify-between items-center px-1">
-                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                        Region: Kozhikode / Calicut
-                    </span>
+           <div className="bg-slate-900 p-3 flex flex-col gap-3 shadow-lg ring-1 ring-slate-800 z-50">
+        <div className="flex justify-between items-center px-1">
+          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">
+            {t.simulation} - Calicut Zone
+          </span>
+          <span className="text-[10px] text-emerald-400 font-bold uppercase flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            IMD Live
+          </span>
+        </div>
 
-                    <span className="text-[10px] text-emerald-400 font-bold uppercase flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        IMD Verified
-                    </span>
-                </div>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={() => setIsOnlineManual(!isOnlineManual)}
+            className={`flex items-center justify-center gap-2 py-2 rounded-xl text-[11px] font-black uppercase transition-all duration-300 ${
+              isOnlineManual ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/50" : "bg-red-500/20 text-red-300 ring-1 ring-red-500/50"
+            }`}
+          >
+            {isOnlineManual ? "📶 Online" : "📡 SMS Mode"}
+          </button>
 
-                {/* Control Buttons */}
-                <div className="grid grid-cols-2 gap-2">
-                    {/* Connectivity Toggle */}
-                    <button
-                        onClick={() => setIsOnlineManual(!isOnlineManual)}
-                        className={`
-        flex items-center justify-center gap-2
-        py-2 rounded-xl text-[11px] font-black uppercase
-        transition-all duration-300
-        ${isOnlineManual
-                                ? "bg-emerald-500/20 text-emerald-300 ring-2 ring-emerald-500/50"
-                                : "bg-red-500/20 text-red-300 ring-2 ring-red-500/50"
-                            }
-      `}
-                    >
-                        {isOnlineManual ? "📶 Online Mode" : "📡 SMS Mode"}
-                    </button>
+          <button
+            onClick={() => setStatus(status === "safe" ? "danger" : "safe")}
+            className={`flex items-center justify-center gap-2 py-2 rounded-xl text-[11px] font-black uppercase transition-all duration-300 ${
+              status === "safe" ? "bg-blue-500/20 text-blue-300 ring-1 ring-blue-500/50" : "bg-orange-500/20 text-orange-300 ring-1 ring-orange-500/50"
+            }`}
+          >
+            {status === "safe" ? "⚠ Set Danger" : "✅ Set Safe"}
+          </button>
+        </div>
 
-                    {/* Status Simulation */}
-                    <button
-                        onClick={() => setStatus(status === "safe" ? "danger" : "safe")}
-                        className={`
-        flex items-center justify-center gap-2
-        py-2 rounded-xl text-[11px] font-black uppercase
-        transition-all duration-300
-        ${status === "safe"
-                                ? "bg-blue-500/20 text-blue-300 ring-2 ring-blue-500/50"
-                                : "bg-orange-500/20 text-orange-300 ring-2 ring-orange-500/50"
-                            }
-      `}
-                    >
-                        {status === "safe" ? "⚠ Simulate Danger" : "✅ Simulate Safe"}
-                    </button>
-                </div>
-
-                {/* Market Button */}
-                <Link to="/market">
-                <button
-                    className="
-      mt-1 py-3 rounded-xl
-      bg-indigo-600 hover:bg-indigo-500 active:scale-95
-      text-white text-sm font-extrabold uppercase tracking-wide
-      transition-all shadow-md
-    "
-                >
-                    🐟 View Fish Market Prices
-                </button>
-                </Link>
-            </div>
-
+        {/* MARKET NAVIGATION BUTTON (Replacing Link) */}
+        <Link to="/market">
+        <button
+          
+          className="w-full flex items-center justify-center gap-2 py-3 bg-indigo-600 rounded-xl text-white text-[11px] font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all"
+        >
+          <ShoppingBasket size={14} /> View Market <ArrowRight size={14} />
+        </button>
+        </Link>
+      </div>
             {/* 2. HEADER */}
             <header className="bg-white p-4 flex justify-between items-center border-b shadow-sm sticky top-0 z-20">
                 <div className="flex items-center gap-3">
