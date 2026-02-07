@@ -15,7 +15,7 @@ import {
 
 const App = () => {
   // --- UI STATE ---
-  const [activeTab, setActiveTab] = useState('spot'); // 'spot' or 'land'
+  const [activeTab, setActiveTab] = useState('land'); // 'spot' or 'land'
   const [isMalayalam, setIsMalayalam] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [isSendingSos, setIsSendingSos] = useState(false);

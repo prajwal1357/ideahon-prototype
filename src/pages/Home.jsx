@@ -25,9 +25,11 @@ import {
     MapPinCheck,
     MapIcon,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 
 const App = () => {
+    const navigate = useNavigate();
     // --- STATE ---
     const [isMalayalam, setIsMalayalam] = useState(false);
     const [status, setStatus] = useState("safe");
@@ -78,6 +80,7 @@ const App = () => {
         },
     };
 
+    
     const t = isMalayalam ? content.ml : content.en;
 
     const handleSos = () => {
@@ -87,6 +90,7 @@ const App = () => {
                 const smsMsg = `SOS: Calicut Boat at ${coords.lat}, ${coords.lng}`;
                 window.location.href = `sms:1554?body=${encodeURIComponent(smsMsg)}`;
             }
+            navigate("/map");
             setIsSendingSos(false);
         }, 2000);
     };
@@ -297,11 +301,15 @@ const App = () => {
 
                 <button
                     onClick={handleSos}
+                    
                     className="w-full flex flex-col items-center justify-center py-5 bg-red-600 rounded-[2.5rem] font-black text-white shadow-xl shadow-red-200 active:bg-red-800 active:scale-95 transition-all"
                 >
-                    <Link>
-                    
-                    </Link>
+                    {/* <Link to="/map"> */}
+                        <div className="flex items-center gap-4" >
+                        <PhoneCall size={32} fill="white" />
+                        <span className="text-3xl tracking-tighter uppercase">{t.sos} </span>
+                    </div>
+                    {/* </Link> */}
                     <div className="flex items-center gap-2 mt-1 opacity-80">
                         {isOnlineManual ? <Wifi size={12} /> : <WifiOff size={12} />}
                         <span className="text-[9px] font-bold uppercase tracking-widest italic">
