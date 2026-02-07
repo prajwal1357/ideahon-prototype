@@ -22,6 +22,8 @@ import {
     Zap,
     Anchor,
     ShoppingBasket,
+    MapPinCheck,
+    MapIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -123,13 +125,22 @@ const App = () => {
           </button>
         </div>
 
-        {/* MARKET NAVIGATION BUTTON (Replacing Link) */}
+        {/* MARKET NAVIGATION BUTTON  */}
         <Link to="/market">
         <button
           
           className="w-full flex items-center justify-center gap-2 py-3 bg-indigo-600 rounded-xl text-white text-[11px] font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all"
         >
           <ShoppingBasket size={14} /> View Market <ArrowRight size={14} />
+        </button>
+        </Link>
+        {/* this here is for map */}
+        <Link to="/map">
+        <button
+          
+          className="w-full flex items-center justify-center gap-2 py-3 bg-indigo-600 rounded-xl text-white text-[11px] font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all"
+        >
+          <MapIcon size={14} /> View Map <ArrowRight size={14} />
         </button>
         </Link>
       </div>
@@ -288,10 +299,9 @@ const App = () => {
                     onClick={handleSos}
                     className="w-full flex flex-col items-center justify-center py-5 bg-red-600 rounded-[2.5rem] font-black text-white shadow-xl shadow-red-200 active:bg-red-800 active:scale-95 transition-all"
                 >
-                    <div className="flex items-center gap-4">
-                        <PhoneCall size={32} fill="white" />
-                        <span className="text-3xl tracking-tighter uppercase">{t.sos}</span>
-                    </div>
+                    <Link>
+                    
+                    </Link>
                     <div className="flex items-center gap-2 mt-1 opacity-80">
                         {isOnlineManual ? <Wifi size={12} /> : <WifiOff size={12} />}
                         <span className="text-[9px] font-bold uppercase tracking-widest italic">
